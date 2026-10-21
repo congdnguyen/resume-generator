@@ -1,0 +1,45 @@
+# Resume Generator Stack Docker Compose
+# To run: docker compose up -d
+
+services:
+  # ============================================
+  # FastAPI API Server - Pulled directly from Docker Hub
+  # ============================================
+  api-server:
+    image: congnguyen12/resume-api:latest
+    container_name: api-server
+    ports:
+      - 8077:8000 # FastAPI REST API
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+    networks:
+      - resume-network
+
+  # ============================================
+  # Nginx Web UI - Static HTML Interface
+  # ============================================
+  web-ui:
+    image: congnguyen12/resume-web:latest
+    container_name: web-ui
+    ports:
+      - 8079:80 # Nginx static serving
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - api-server
+    networks:
+      - resume-network
+
+networks:
+  resume-network:
+    driver: bridge
