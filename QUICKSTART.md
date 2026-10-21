@@ -5,7 +5,8 @@
 ### Step 1: Start the Services
 
 ```bash
-cd G:\tvpine\randomtask\publish
+git clone https://github.com/congdnguyen/resume-generator.git
+cd resume-generator
 docker compose up -d
 ```
 
